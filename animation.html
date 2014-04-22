@@ -10,6 +10,9 @@
 
 var height = 800;
 var width = 800;
+var side = 400;
+var anix = 10;
+var aniy = 10;
 var svg = d3.select("#canvas").append("svg").attr("height", height).attr("width", width);
 var peoplearray = [];
 var headarray = [];
@@ -17,10 +20,10 @@ var limbsarray = [];
 
 var radius = 3;
 var rectangle = svg.append("rect")
-	.attr("x", 10)
-	.attr("y", 10)
-	.attr("width", 400)
-	.attr("height", 400)
+	.attr("x", anix)
+	.attr("y", aniy)
+	.attr("width", side)
+	.attr("height", side)
 	.attr("stroke-width",5)
 	.attr("fill-opacity",.5);
 var createPerson = function(x,y) {
@@ -129,33 +132,51 @@ var actPerson = function(person) {
 		movey=-5;
 	var tempx = Number(headarray[person].attr("cx"))+movex;
 	var tempy = Number(headarray[person].attr("cy"))+movey;
-    if(tempx > 410)
+    if(tempx > anix+side-3*radius)
         tempx=tempx-2*5;
-    if(tempx<10)
+    if(tempx<anix+3*radius)
         tempx=tempx+2*5;
-    if(tempy > 410)
+    if(tempy > aniy+side-9*radius)
         tempy=tempy-2*5;
-    if(tempy<10)
+    if(tempy<aniy+2*radius)
         tempy=tempy+2*5;
 	movePerson(tempx,tempy,person);
 };
 var createAlotofPeople = function(number) {
-    for(var i =0;i<number;i++)
+    var total =number+peoplearray.length;
+    for(var i =peoplearray.length;i<total;i++)
     {
-        var rand1 =Math.floor((Math.random()*400));
-        var rand2 =Math.floor((Math.random()*400));
-        createPerson(10+rand1,10+rand2);
+        var rand1 =Math.floor((Math.random()*(400-6*radius)));
+        var rand2 =Math.floor((Math.random()*(400-11*radius)));
+        createPerson(anix+3*radius+rand1,aniy+2*radius+rand2);
         myTimer(i);
     }
 
 }
 function myTimer(item)
-    {setInterval(function(){actPerson(Number(item))}, 100);}
+    {peoplearray.push(setInterval(function(){actPerson(Number(item))}, 100));}
+function myTimer2(item)
+    {clearInterval(peoplearray[item]);}
 
 var stopAlotofPeople = function (d){
     for(var i=0;i<peoplearray.length;i++)
     {
-        clearInterval(peoplearray[i]);
+        console.log(peoplearray[i]);
+        myTimer2(i);
+    }
+}
+var deleteAlotofPeople = function(d){
+    stopAlotofPeople();
+    for(var i=headarray.length-1;i>=0;i--)
+    {
+        headarray[i].remove();
+        headarray.pop();
+        peoplearray.pop();
+    }
+    for(var i=limbsarray.length-1;i>=0;i--)
+    {
+        limbsarray[i].remove();
+        limbsarray.pop();
     }
 }
 
@@ -163,3 +184,4 @@ var stopAlotofPeople = function (d){
 </script>
 </body>
 </html>
+ 
