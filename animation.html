@@ -1,0 +1,165 @@
+<html>
+<head>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+</head>
+
+<body>
+<div id="canvas"></div>
+
+<script>
+
+var height = 800;
+var width = 800;
+var svg = d3.select("#canvas").append("svg").attr("height", height).attr("width", width);
+var peoplearray = [];
+var headarray = [];
+var limbsarray = [];
+
+var radius = 3;
+var rectangle = svg.append("rect")
+	.attr("x", 10)
+	.attr("y", 10)
+	.attr("width", 400)
+	.attr("height", 400)
+	.attr("stroke-width",5)
+	.attr("fill-opacity",.5);
+var createPerson = function(x,y) {
+	var head = svg.append("circle")
+    .attr("cx", x)
+    .attr("cy", y)
+    .attr("r", radius);
+    headarray.push(head);
+
+    var limb1 = svg.append("line")
+    .attr("x1", x)
+    .attr("y1", y+radius)
+    .attr("x2", x)
+    .attr("y2", y+radius*4)
+    .attr("stroke-width", 2)
+    .attr("stroke", "black");
+    limbsarray.push(limb1);
+
+    var limb2 = svg.append("line")
+    .attr("x1", x)
+    .attr("y1", y+radius*4)
+    .attr("x2", x-radius)
+    .attr("y2", y+radius*8)
+    .attr("stroke-width", 2)
+    .attr("stroke", "black");
+    limbsarray.push(limb2);
+
+    var limb3 = svg.append("line")
+    .attr("x1", x)
+    .attr("y1", y+radius*4)
+    .attr("x2", x+radius)
+    .attr("y2", y+radius*8)
+    .attr("stroke-width", 2)
+    .attr("stroke", "black");
+    limbsarray.push(limb3);
+
+    var limb4 = svg.append("line")
+    .attr("x1", x)
+    .attr("y1", y+radius*2.5)
+    .attr("x2", x+radius*2)
+    .attr("y2", y+radius)
+    .attr("stroke-width", 2)
+    .attr("stroke", "black");
+    limbsarray.push(limb4);
+
+
+    var limb5 = svg.append("line")
+    .attr("x1", x)
+    .attr("y1", y+radius*2.5)
+    .attr("x2", x-radius*2)
+    .attr("y2", y+radius)
+    .attr("stroke-width", 2)
+    .attr("stroke", "black");
+    limbsarray.push(limb5);
+};
+
+var movePerson = function(x,y,person) {
+    headarray[person].transition()
+    .attr("cx", x)
+    .attr("cy", y);
+
+	limbsarray[person*5].transition()
+    .attr("x1", x)
+    .attr("y1", y+radius)
+    .attr("x2", x)
+    .attr("y2", y+radius*4);
+
+    limbsarray[person*5+1].transition()
+    .attr("x1", x)
+    .attr("y1", y+radius*4)
+    .attr("x2", x-radius)
+    .attr("y2", y+radius*8);
+
+    limbsarray[person*5+2].transition()
+    .attr("x1", x)
+    .attr("y1", y+radius*4)
+    .attr("x2", x+radius)
+    .attr("y2", y+radius*8);
+
+    limbsarray[person*5+3].transition()
+    .attr("x1", x)
+    .attr("y1", y+radius*2.5)
+    .attr("x2", x+radius*2)
+    .attr("y2", y+radius);
+
+
+    limbsarray[person*5+4].transition()
+    .attr("x1", x)
+    .attr("y1", y+radius*2.5)
+    .attr("x2", x-radius*2)
+    .attr("y2", y+radius);
+};
+var actPerson = function(person) {
+	var rand =Math.random();
+	var rand2 =Math.random();
+	var movex=0;
+	var movey=0;
+	if(rand <.5)
+		movex=5;
+	else
+		movex=-5;
+
+	if(rand2 <.5)
+		movey=5;
+	else
+		movey=-5;
+	var tempx = Number(headarray[person].attr("cx"))+movex;
+	var tempy = Number(headarray[person].attr("cy"))+movey;
+    if(tempx > 410)
+        tempx=tempx-2*5;
+    if(tempx<10)
+        tempx=tempx+2*5;
+    if(tempy > 410)
+        tempy=tempy-2*5;
+    if(tempy<10)
+        tempy=tempy+2*5;
+	movePerson(tempx,tempy,person);
+};
+var createAlotofPeople = function(number) {
+    for(var i =0;i<number;i++)
+    {
+        var rand1 =Math.floor((Math.random()*400));
+        var rand2 =Math.floor((Math.random()*400));
+        createPerson(10+rand1,10+rand2);
+        myTimer(i);
+    }
+
+}
+function myTimer(item)
+    {setInterval(function(){actPerson(Number(item))}, 100);}
+
+var stopAlotofPeople = function (d){
+    for(var i=0;i<peoplearray.length;i++)
+    {
+        clearInterval(peoplearray[i]);
+    }
+}
+
+
+</script>
+</body>
+</html>
